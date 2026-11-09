@@ -1,0 +1,34 @@
+# CS781 Capstone — In-House Legal Intelligence System
+# Python dependencies for all seven phases.
+#
+# All results were produced on Kaggle ("Latest Container Image", Python 3, 2 x Tesla T4).
+# The versions in the comments are the ones printed in our notebook logs.
+# Most packages come pre-installed on Kaggle; the notebooks pip-install the rest themselves
+# (ijson in Phase 1; rouge-score and bert-score in Phase 6).
+#
+# Install elsewhere with:   pip install -r requirements.txt
+# (install the CUDA build of PyTorch that matches your GPU driver, see https://pytorch.org)
+
+# --- core: model code, training, inference (all phases) ---
+torch>=2.1                 # used: 2.11.0 (CUDA 12.8); own model code, DDP, fp16/bf16, SDPA attention
+numpy>=1.24                # token files (uint16 .bin), probabilities, metrics
+tokenizers>=0.15           # used: 0.23.1; our byte-level BPE tokenizer (trained in Phase 1, loaded in Phases 2-7)
+huggingface_hub>=0.20      # used: 1.29.0; data, checkpoints, run outputs on the Hugging Face Hub
+
+# --- data handling ---
+ijson>=3.2                 # Phase 1: streaming read of the large raw JSON corpus
+pandas>=1.5                # Phase 1: imported in the Kaggle starter cell
+kagglehub                  # Phase 1: imported in the Kaggle starter cell (not otherwise needed)
+
+# --- classical ML: metrics, TF-IDF, sparse matrices ---
+scikit-learn>=1.2          # used: 1.6.1; Phases 3-5 evaluators (f1_score), TF-IDF in Phases 6-7
+scipy>=1.10                # Phase 7: sparse BM25 / TF-IDF matrices
+
+# --- official evaluators (Phases 1 and 6) ---
+rouge-score==0.1.2         # Phase 6 evaluator (ROUGE-1 / ROUGE-L), version installed by the Phase 6 notebooks
+bert-score==0.3.13         # Phases 1 and 6 evaluators (BERTScore F1 with roberta-large, layer 17), version installed by the Phase 6 notebooks
+                           # (bert-score pulls in transformers and downloads roberta-large on first use)
+
+# --- Kaggle only, not installable with pip ---
+# kaggle_secrets           # UserSecretsClient reads the Hugging Face token from the Kaggle secret "HF" / "HF_TOKEN".
+#                          # Outside Kaggle, set HF_TOKEN = os.environ["HF_TOKEN"] instead (see README, section 7.2).
